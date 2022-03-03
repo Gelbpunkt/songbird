@@ -2,11 +2,11 @@ use crate::model::Event;
 
 use async_trait::async_trait;
 #[cfg(not(feature = "tokio-02-marker"))]
-use async_tungstenite::{
+use tokio_tungstenite::{
     self as tungstenite,
-    tokio::ConnectStream,
     tungstenite::{error::Error as TungsteniteError, protocol::CloseFrame, Message},
     WebSocketStream,
+    MaybeTlsStream,
 };
 #[cfg(feature = "tokio-02-marker")]
 use async_tungstenite_compat::{
@@ -18,12 +18,12 @@ use async_tungstenite_compat::{
 use futures::{SinkExt, StreamExt, TryStreamExt};
 use serde_json::Error as JsonError;
 #[cfg(not(feature = "tokio-02-marker"))]
-use tokio::time::{timeout, Duration};
+use tokio::{time::{timeout, Duration}, net::TcpStream};
 #[cfg(feature = "tokio-02-marker")]
 use tokio_compat::time::{timeout, Duration};
 use tracing::instrument;
 
-pub type WsStream = WebSocketStream<ConnectStream>;
+pub type WsStream = WebSocketStream<MaybeTlsStream<TcpStream>>;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -179,7 +179,7 @@ impl StdError for RustlsError {
 #[cfg(all(feature = "rustls-marker", not(feature = "native-marker")))]
 #[instrument]
 pub(crate) async fn create_rustls_client(url: Url) -> Result<WsStream> {
-    let (stream, _) = tungstenite::tokio::connect_async_with_config::<Url>(
+    let (stream, _) = tungstenite::connect_async_with_config::<Url>(
         url,
         Some(tungstenite::tungstenite::protocol::WebSocketConfig {
             max_message_size: None,

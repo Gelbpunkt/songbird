@@ -5,7 +5,7 @@ use crate::{
     ws::Error as WsError,
 };
 #[cfg(not(feature = "tokio-02-marker"))]
-use async_tungstenite::tungstenite::protocol::frame::coding::CloseCode;
+use tokio_tungstenite::tungstenite::protocol::frame::coding::CloseCode;
 #[cfg(feature = "tokio-02-marker")]
 use async_tungstenite_compat::tungstenite::protocol::frame::coding::CloseCode;
 

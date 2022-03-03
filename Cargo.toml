@@ -24,11 +24,11 @@ symphonia-core = "0.2"
 optional = true
 version = "0.1"
 
-[dependencies.async-tungstenite]
+[dependencies.tokio-tungstenite]
 default-features = false
-features = ["tokio-runtime"]
+features = ["connect"]
 optional = true
-version = "0.14"
+version = "0.17"
 
 [dependencies.async-tungstenite-compat]
 package = "async-tungstenite"
@@ -155,7 +155,7 @@ gateway-core = [
     "pin-project",
 ]
 driver = [
-    "async-tungstenite",
+    "tokio-tungstenite",
     "driver-core",
     "tokio/fs",
     "tokio/io-util",
@@ -182,11 +182,11 @@ driver-core = [
     "uuid",
     "xsalsa20poly1305",
 ]
-rustls = ["async-tungstenite/tokio-rustls-webpki-roots", "rustls-marker"]
-native = ["async-tungstenite/tokio-native-tls", "native-marker"]
+rustls = ["tokio-tungstenite/rustls-tls-webpki-roots", "rustls-marker"]
+native = ["tokio-tungstenite/native-tls", "native-marker"]
 serenity-rustls = ["serenity/rustls_backend", "rustls", "gateway", "serenity-deps"]
 serenity-native = ["serenity/native_tls_backend", "native", "gateway", "serenity-deps"]
-twilight-rustls = ["twilight", "twilight-gateway/rustls-native-roots", "rustls", "gateway"]
+twilight-rustls = ["twilight", "twilight-gateway/rustls-webpki-roots", "rustls", "gateway"]
 twilight-native = ["twilight", "twilight-gateway/native", "native", "gateway"]
 twilight = ["twilight-model"]
 zlib-simd = ["twilight-gateway/zlib-simd"]
